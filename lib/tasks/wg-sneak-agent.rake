@@ -39,7 +39,6 @@ task :connect do
   uri = URI('http://localhost:3000/projects')
   req = Net::HTTP::Post.new(uri)
   req.set_form_data(
-    'project[ip]' => ip,
     'project[path]' => path,
     'project[name]' => name
   )
