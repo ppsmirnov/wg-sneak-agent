@@ -36,7 +36,7 @@ task :connect do
   ip = res.split("\n\n")[0].split("\n")[1].strip.split(" ")[1].split(":").last
   path = Dir.pwd
   name =  path.split("/").last
-  uri = URI('http://localhost:3000/projects')
+  uri = URI('http://176.9.249.247/projects') # fix this
   req = Net::HTTP::Post.new(uri)
   req.set_form_data(
     'project[ip]' => ip,
