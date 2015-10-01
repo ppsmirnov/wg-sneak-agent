@@ -10,5 +10,4 @@ Gem::Specification.new do |s|
   s.homepage    =
     'http://example.com'
   s.license       = 'MIT'
-  s.post_install_message = "Run rake-logger to start"
 end
