@@ -35,9 +35,10 @@ task :connect do
   ip = %x{ifconfig | grep -Eo 'inet (addr:)?[^\s]+' | grep -Eo '[0-9.]+' | grep -vE '127.0.0.[0-9]+' | uniq}
   path = Dir.pwd
   if path.split("/")[-2] == 'releases'
-    name =  path.split("/")[-3]
+    name = path.split("/")[-3]
+    path = path.split('/')[0..-3].push('current').join("/")
   else
-    name =  path.split("/").last
+    name = path.split("/").last
   end
   uri = URI('http://176.9.249.247/projects') # fix this
   req = Net::HTTP::Post.new(uri)
