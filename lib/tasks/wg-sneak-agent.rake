@@ -32,7 +32,7 @@ end
 
 task :connect do
   puts "connecting to log server"
-  ip = %x{ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -vE '127.0.0.[0-9]+'}
+  ip = %x{ifconfig | grep -Eo 'inet (addr:)?[^\s]+' | grep -Eo '[0-9.]+' | grep -vE '127.0.0.[0-9]+' | uniq}
   path = Dir.pwd
   name =  path.split("/").last
   uri = URI('http://176.9.249.247/projects') # fix this
