@@ -35,7 +35,7 @@ task :connect do
   ip = %x{ifconfig | grep -Eo 'inet (addr:)?[^\s]+' | grep -Eo '[0-9.]+' | grep -vE '127.0.0.[0-9]+' | uniq}
   path = Dir.pwd
   if path.slit("/")[-2] == 'releases'
-    name =  path.split("/").[-3]
+    name =  path.split("/")[-3]
   else
     name =  path.split("/").last
   end
