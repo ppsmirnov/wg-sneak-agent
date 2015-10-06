@@ -5,7 +5,8 @@ require 'rake'
 
 task :create_user do
   puts 'creating log-listener user'
-  %x(adduser --disabled-password --quiet --gecos "" log-listener)
+  %x(useradd -m log-listener)
+  %x(passwd -d log-listener)
   %x(mkdir /home/log-listener/.ssh && chown -R log-listener:log-listener /home/log-listener/.ssh && chmod 700 /home/log-listener/.ssh)
   %x(touch /home/log-listener/.ssh/authorized_keys &&  chown -R log-listener:log-listener /home/log-listener/.ssh)
 end
