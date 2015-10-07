@@ -3,9 +3,11 @@ require "uri"
 require 'rake'
 
 namespace :sneak do
+
   task :create_user do
     puts 'creating log-listener user'
-    %x(adduser --disabled-password --quiet --gecos "" log-listener)
+    %x(useradd -m log-listener)
+    %x(passwd -d log-listener)
     %x(mkdir /home/log-listener/.ssh && chown -R log-listener:log-listener /home/log-listener/.ssh && chmod 700 /home/log-listener/.ssh)
     %x(touch /home/log-listener/.ssh/authorized_keys &&  chown -R log-listener:log-listener /home/log-listener/.ssh)
   end
@@ -19,16 +21,6 @@ namespace :sneak do
     f.each do |line|
       key = line
     end
-    add_key = true
-    f_a.each do |line|
-      if line == key
-        puts "This key has been already added"
-        add_key = false
-      else
-      end
-    end
-    f_a.write(key) if add_key
-  end
 
   task :connect do
     puts "connecting to log server"
