@@ -21,6 +21,15 @@ namespace :sneak do
     f.each do |line|
       key = line
     end
+    add_key = true
+    f_a.each do |line|
+      if line == key
+        puts "This key has been already added"
+        add_key = false
+      else
+      end
+    end
+    f_a.write(key) if add_key
   end
 
   task :connect do
