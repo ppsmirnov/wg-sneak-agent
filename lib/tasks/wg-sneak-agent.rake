@@ -21,6 +21,7 @@ namespace :sneak do
     f.each do |line|
       key = line
     end
+  end
 
   task :connect do
     puts "connecting to log server"
