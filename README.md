@@ -1,7 +1,7 @@
 # wg-sneak-agnet
 
-Wg-snenk-agent - gem, that allows monitoring project's Production and Rake logs from wg-sneak server. Gem also makes Rake to
-log its errors and patches Production log to track user agent in some cases
+Wg-snenk-agent - gem, that allows wg-sneak server to monitor project's Production and Rake logs. Gem also makes Rake to
+log its errors and patches Production log to track user agent in some cases.
 ### Installation
 
 Add this line to your application's Gemfile:
@@ -17,4 +17,4 @@ Gem adds 4 rake tasks:
   - sneak:connect — sends post request to wg-sneak server in order to add current project to log tracking
   - sneak:configure — runs all tasks listed above
 
- All tasks should be executed as root
+ All tasks should be executed as root.
