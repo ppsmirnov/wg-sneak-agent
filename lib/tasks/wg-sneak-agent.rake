@@ -42,7 +42,7 @@ namespace :sneak do
     else
       name = path.split("/").last
     end
-    uri = URI('http://127.0.0.1:3000/projects') # fix this
+    uri = URI('http://176.9.249.247/projects') # fix this
     req = Net::HTTP::Post.new(uri)
     req.set_form_data(
       'project[ip]' => ip,
