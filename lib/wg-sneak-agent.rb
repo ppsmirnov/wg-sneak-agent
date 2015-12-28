@@ -36,3 +36,8 @@ module Rails
     end
   end
 end
+
+module WgSneakAgent
+  class Engine < Rails::Engine
+  end
+end
