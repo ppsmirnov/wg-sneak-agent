@@ -9,7 +9,7 @@ module WgSneakAgent
 
     def call(env)
       resp = @app.call(env)
-      env.merge!({"timestamp" => Time.now})
+      env.merge!({"timestamp" => Time.now.to_f})
       resp = set_user_id(env, resp)
       entry = env["error_name"] ? log_data(env, resp).merge(error_data(env)) : log_data(env, resp)
       write_entry(entry)
@@ -22,7 +22,7 @@ module WgSneakAgent
           logType: 'http',
           status: resp.first,
           timestamp: env["timestamp"],
-          duration: Time.now - env["timestamp"],
+          duration: Time.now.to_f - env["timestamp"],
           responseHeaders: resp.second,
           method: env["REQUEST_METHOD"],
           requestHeaders: request_headers(env),
