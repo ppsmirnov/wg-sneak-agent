@@ -9,7 +9,7 @@ module WgSneakAgent
 
     def call(env)
       resp = @app.call(env)
-      env.merge!({"timestamp" => Time.now.to_f})
+      env.merge!({"timestamp" => Time.now})
       resp = set_user_id(env, resp)
       entry = env["error_name"] ? log_data(env, resp).merge(error_data(env)) : log_data(env, resp)
       write_entry(entry)
@@ -22,7 +22,7 @@ module WgSneakAgent
           logType: 'http',
           status: resp.first,
           timestamp: env["timestamp"],
-          duration: Time.now.to_f - env["timestamp"],
+          duration: Time.now - env["timestamp"],
           responseHeaders: resp.second,
           method: env["REQUEST_METHOD"],
           requestHeaders: request_headers(env),
@@ -47,9 +47,9 @@ module WgSneakAgent
         cookie = request_headers(env)["Cookie"]
 
         if cookie && cookie.include?("_wg_sneak_user")
-          timestamp = cookie.match(/_wg_sneak_user=([\d.]+)/)[0]
+          timestamp = cookie.match(/_wg_sneak_user=([\d.]+)/)[1]
         else
-          timestamp = Time.now.to_f
+          timestamp = Time.now
           resp.second["Set-Cookie"] = "_wg_sneak_user=#{timestamp}; Path=/"
         end
 
@@ -88,10 +88,7 @@ module WgSneakAgent
       end
 
       def write_entry(entry)
-        p entry
-        File.open(Rails.root.join('log', "#{Rails.env}.json.log"), 'a+') do |f|
-          f.write(entry.to_json + "\n")
-        end
+        Rails::HTTP_LOG.write(entry.to_json + "\n")
       end
   end
 end

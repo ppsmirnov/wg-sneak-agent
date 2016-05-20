@@ -5,9 +5,11 @@ require 'wg_sneak_agent/middlewares/exceptions_mw'
 
 require 'logger'
 
+
 module RakeApplicationMixin
+
   def top_level
-    timestamp = Time.now.to_f
+    timestamp = Time.now
     super
     write_entry(log_data(timestamp))
   rescue SystemExit
@@ -29,7 +31,7 @@ module RakeApplicationMixin
         logType: 'rake',
         timestamp: timestamp,
         args: ARGV,
-        duration: Time.now.to_f - timestamp
+        duration: Time.now - timestamp
       }
 
       if exception
@@ -43,9 +45,7 @@ module RakeApplicationMixin
     end
 
     def write_entry(entry)
-      File.open(Rails.root.join('log', 'rake.json.log'), 'a+') do |f|
-        f.write(entry.to_json + "\n")
-      end
+      Rails::RAKE_LOG.write(entry.to_json + "\n")
     end
 end
 
@@ -80,7 +80,7 @@ module AbstractController
       event = {
         type: 'action',
         value: "#{self.class}\##{action}",
-        timestamp: Time.now.to_f
+        timestamp: Time.now
       }
       begin
         result = old_process.bind(self).(action, *args)
@@ -92,7 +92,7 @@ module AbstractController
       env["session"] = session.to_hash
 
       event.merge!({
-        duration: Time.now.to_f - event[:timestamp]
+        duration: Time.now - event[:timestamp]
       })
 
       RequestStore.store[:events].push(event)
@@ -111,7 +111,7 @@ module ActiveRecord
       define_method(:log) do |sql, name = "SQL", binds = [], statement_name = nil, *args, &block|
 
         RequestStore.store[:events] ||= []
-        timestamp = Time.now.to_f
+        timestamp = Time.now
 
         result = old_log.bind(self).(sql, name, binds, statement_name, *args, &block)
 
@@ -129,7 +129,7 @@ module ActiveRecord
         {
           type: 'db',
           timestamp: timestamp,
-          duration: Time.now.to_f - timestamp,
+          duration: Time.now - timestamp,
           query: sql,
           binds: binds.map{|arr| [arr.first.name, arr.second]}
         }
@@ -147,6 +147,13 @@ module WgSneakAgent
     initializer "wg_sneak_agent.insert_middleware" do |app|
       app.config.middleware.insert_before 0, WgSneakAgent::MainMw
       app.config.middleware.insert_after ActionDispatch::DebugExceptions, WgSneakAgent::ExceptionsMw
+    end
+
+    initializer "wg_sneak_agent.init_log_files" do
+      Rails::HTTP_LOG = File.open(Rails.root.join('log', "#{Rails.env}.json.log"), 'a+')
+      Rails::HTTP_LOG.sync = true
+      Rails::RAKE_LOG = File.open(Rails.root.join('log', "rake.json.log"), 'a+')
+      Rails::RAKE_LOG.sync = true
     end
   end
 end

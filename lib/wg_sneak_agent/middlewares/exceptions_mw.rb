@@ -7,7 +7,7 @@ module WgSneakAgent
     end
 
     def call(env)
-      timestamp = Time.now.to_f
+      timestamp = Time.now
       begin
         resp = @app.call(env)
         env.merge!({
