@@ -76,6 +76,7 @@ module AbstractController
 
     define_method(:process) do |action, *args|
       RequestStore.store[:events] ||= []
+      env ||= {}
       old_session = get_session
       event = {
         type: 'action',
