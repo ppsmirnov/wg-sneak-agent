@@ -76,7 +76,7 @@ module AbstractController
 
     define_method(:process) do |action, *args|
       RequestStore.store[:events] ||= []
-      old_session = session.to_hash
+      old_session = get_session
       event = {
         type: 'action',
         value: "#{self.class}\##{action}",
@@ -89,7 +89,7 @@ module AbstractController
         raise
       end
 
-      env["session"] = session.to_hash
+      env["session"] = get_session
 
       event.merge!({
         duration: Time.now - event[:timestamp]
@@ -99,6 +99,15 @@ module AbstractController
 
       result
     end
+
+    private
+      def get_session
+        begin
+          session.to_hash
+        rescue => e
+          nil
+        end
+      end
   end
 end
 
