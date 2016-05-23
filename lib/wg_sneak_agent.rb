@@ -76,8 +76,8 @@ module AbstractController
 
     define_method(:process) do |action, *args|
       RequestStore.store[:events] ||= []
-      env ||= {}
       old_session = get_session
+
       event = {
         type: 'action',
         value: "#{self.class}\##{action}",
@@ -86,11 +86,11 @@ module AbstractController
       begin
         result = old_process.bind(self).(action, *args)
       rescue => e
-        env["session"] = old_session
+        env["session"] = old_session if defined? env
         raise
       end
 
-      env["session"] = get_session
+      env["session"] = get_session if defined? env
 
       event.merge!({
         duration: Time.now - event[:timestamp]
