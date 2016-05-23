@@ -54,7 +54,7 @@ module WgSneakAgent
         end
 
         env.merge!({
-          "user_id" => timestamp
+          "user_id" => timestamp.to_s
         })
 
         resp
