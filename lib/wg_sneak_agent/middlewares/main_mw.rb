@@ -49,8 +49,13 @@ module WgSneakAgent
         if cookie && cookie.include?("_wg_sneak_user")
           timestamp = cookie.match(/_wg_sneak_user=([\d.]+)/)[1]
         else
-          timestamp = Time.now.to_f
-          resp.second["Set-Cookie"] = "_wg_sneak_user=#{timestamp}; Path=/"
+          userId = "_wg_sneak_user=#{Time.now.to_f}\; path=/\; "
+
+          if resp.second["Set-Cookie"]
+            resp.second["Set-Cookie"].insert(0, userId)
+          else
+            resp.second["Set-Cookie"] = userId
+          end
         end
 
         env.merge!({
