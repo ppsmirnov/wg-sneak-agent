@@ -50,14 +50,13 @@ module WgSneakAgent
           timestamp = cookie.match(/_wg_sneak_user=([\d.]+)/)[1]
         else
           timestamp = Time.now.to_f
-          userId = "; _wg_sneak_user=#{timestamp}\; path=/"
-          resp.second["Set-Cookie"] = resp.second["Set-Cookie"].to_s + userId
+          userId = "_wg_sneak_user=#{timestamp}\; path=/ \;"
+          resp.second["Set-Cookie"] = userId + resp.second["Set-Cookie"].to_s
         end
 
         env.merge!({
           "user_id" => timestamp.to_s
         })
-
         resp
       end
 
@@ -79,12 +78,7 @@ module WgSneakAgent
         env.select {|k,v| k.start_with?('HTTP')}
             .collect do |key, val|
               new_key = key.sub(/^HTTP_/, '').split('_').map {|v| v.capitalize}.join('-')
-              if new_key == 'Cookie'
-                new_val = val.gsub(/(_.*session=[%\w-]+);?/, '')
-              else
-                new_val = val
-              end
-              [new_key, new_val]
+              [new_key, val]
             end.to_h
       end
 

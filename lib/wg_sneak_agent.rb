@@ -45,7 +45,9 @@ module RakeApplicationMixin
     end
 
     def write_entry(entry)
-      Rails::RAKE_LOG.write(entry.to_json + "\n")
+      File.open("log/rake.json.log", 'a+') do |f|
+        f.write(entry.to_json)
+      end
     end
 end
 
@@ -162,8 +164,6 @@ module WgSneakAgent
     initializer "wg_sneak_agent.init_log_files" do
       Rails::HTTP_LOG = File.open(Rails.root.join('log', "#{Rails.env}.json.log"), 'a+')
       Rails::HTTP_LOG.sync = true
-      Rails::RAKE_LOG = File.open(Rails.root.join('log', "rake.json.log"), 'a+')
-      Rails::RAKE_LOG.sync = true
     end
   end
 end
