@@ -162,7 +162,7 @@ module WgSneakAgent
     end
 
     initializer "wg_sneak_agent.init_log_files" do
-      Rails::HTTP_LOG = File.open(Rails.root.join('log', "#{Rails.env}.json.log"), 'a+')
+      Rails::HTTP_LOG = File.open(Rails.root.join('log', "#{Rails.env}.json.log"), 'a+:UTF-8')
       Rails::HTTP_LOG.sync = true
     end
   end

@@ -62,16 +62,27 @@ module WgSneakAgent
 
       def request_params(env)
         return nil unless env['action_dispatch.request.parameters']
-
         env['action_dispatch.request.parameters'].map do |k, v|
           if k.include?('password')
             [k, "<removed>"]
-          elsif v.class == ActionDispatch::Http::UploadedFile
-            [k, "__file\r\n#{v.headers}Size: #{v.size}"]
+          elsif v.class == ActiveSupport::HashWithIndifferentAccess
+            [k, filter_file_param(v)]
           else
             [k, v]
           end
         end.to_h
+      end
+
+      def filter_file_param(hash)
+        hash.map do |k, v|
+          if v.class == ActionDispatch::Http::UploadedFile
+            [k, "__file\r\n#{v.headers}Size: #{v.size}"]
+          elsif v.class == ActiveSupport::HashWithIndifferentAccess
+            [k, filter_file_param(v)]
+          else
+            [k, v]
+          end
+        end
       end
 
       def request_headers(env)
