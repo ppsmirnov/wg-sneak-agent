@@ -1,4 +1,3 @@
-
 module WgSneakAgent
 
   class MainMw
@@ -12,6 +11,7 @@ module WgSneakAgent
       env.merge!({"timestamp" => Time.now})
       resp = set_user_id(env, resp)
       entry = env["error_name"] ? log_data(env, resp).merge(error_data(env)) : log_data(env, resp)
+      p entry
       write_entry(entry)
       resp
     end
@@ -66,7 +66,10 @@ module WgSneakAgent
           if k.include?('password')
             [k, "<removed>"]
           elsif v.class == ActiveSupport::HashWithIndifferentAccess
+            puts 'Hash!'
             [k, filter_file_param(v)]
+          elsif v.class == Array
+            [k, v.map { |param|  file_param(param)}]
           else
             [k, v]
           end
@@ -76,13 +79,17 @@ module WgSneakAgent
       def filter_file_param(hash)
         hash.map do |k, v|
           if v.class == ActionDispatch::Http::UploadedFile
-            [k, "__file\r\n#{v.headers}Size: #{v.size}"]
+            [k, file_param(v)]
           elsif v.class == ActiveSupport::HashWithIndifferentAccess
             [k, filter_file_param(v)]
           else
             [k, v]
           end
         end
+      end
+
+      def file_param(param)
+        "__file\r\nSize: #{param.size}"
       end
 
       def request_headers(env)
