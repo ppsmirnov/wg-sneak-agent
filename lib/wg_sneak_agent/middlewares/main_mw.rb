@@ -11,7 +11,6 @@ module WgSneakAgent
       env.merge!({"timestamp" => Time.now})
       resp = set_user_id(env, resp)
       entry = env["error_name"] ? log_data(env, resp).merge(error_data(env)) : log_data(env, resp)
-      p entry
       write_entry(entry)
       resp
     end
