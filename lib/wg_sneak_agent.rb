@@ -5,7 +5,6 @@ require 'wg_sneak_agent/middlewares/exceptions_mw'
 
 require 'logger'
 
-
 module RakeApplicationMixin
 
   def top_level
@@ -146,7 +145,6 @@ module ActiveRecord
           binds: binds.map{|arr| [arr.first.name, arr.second]}
         }
       end
-
     end
   end
 end

@@ -2,11 +2,10 @@
 
 Wg-snenk-agent - gem, that allows wg-sneak server to monitor project's Production and Rake logs. Gem also makes Rake to
 log its errors and patches Production log to track user agent in some cases.
-### Installation
 
-Add this line to your application's Gemfile:
+### Version 2 update
+Now gem logs hhtp requests and rake tasks result in JSON format for ELK parsing.
 
-`gem "wg-sneak-agent", :git => 'git@bitbucket.org:webgears/wg-sneak-agent.git'`
 
 ### Working with gem
 
@@ -18,3 +17,5 @@ Gem adds 4 rake tasks:
   - sneak:configure — runs all tasks listed above
 
  All tasks should be executed as root.
+
+ For JSON logging require gem in your application.rb file
